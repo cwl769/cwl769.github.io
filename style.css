@@ -7,3 +7,11 @@ body
     display: block;
     text-align: center;
 }
+.div#blog_link
+{
+    display: inline;
+}
+.a#blog_link
+{
+    text-decoration: none;
+}
