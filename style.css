@@ -2,16 +2,17 @@ body
 {
     background-image:linear-gradient(141deg,#3ec9e4 0%,#1fd9ee 51%,#3ec9e4 99%);
 }
-#main-title
+h1#main-title
 {
     display: block;
     text-align: center;
 }
-.div#blog_link
+div#blog_link
 {
-    display: inline;
+    display: block;
+    text-align: center;
 }
-.a#blog_link
+a#blog_link
 {
     text-decoration: none;
 }
