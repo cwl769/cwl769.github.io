@@ -4,18 +4,12 @@
     <script src="../js/markdown-browser-0.6.0-beta1/markdown.min.js"></script>
 </head>
 <body style="background-image:linear-gradient(141deg,#3ec9e4 0%,#1fd9ee 51%,#3ec9e4 99%);">
-
-    <script>
-        var reader = new FileReader();
-        reader.onload = function fileReadCompleted()
-        {
-            consule.log(reader.result);
-        };
-        
+    <script>        
         /*get .md file*/
         var xhr = new XMLHttpRequest();
-        xhr.open("GEt", "./list.md", true);
-        xhr.responseType = "blob";
-        reader.readAsBinaryString(xhr.response);
+        //xhr.responseType = "blob";
+        xhr.open("GET", "./list.md", false);
+        xhr.send();
+        document.write(markdown.toHTML(xhr.responseText));
     </script>
 </body>
