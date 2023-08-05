@@ -1,10 +1,82 @@
 <!DOCTYPE html> 
 <head> 
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"> 
-    <script src="js/markdown-browser-0.6.0-beta1/markdown.min.js"></script> 
-</head> 
-<body style="background-image:linear-gradient(141deg,#3ec9e4 0%,#1fd9ee 51%,#3ec9e4 99%);"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+    <!--Markdown-->
+    <script src="./node_modules/markdown-it/dist/markdown-it.min.js"></script>
+    <script src="./node_modules/markdown-it-sub/dist/markdown-it-sub.min.js"></script>
+    <script src="./node_modules/markdown-it-sup/dist/markdown-it-sup.min.js"></script>
+    <script src="./node_modules/markdown-it-footnote/dist/markdown-it-footnote.min.js"></script>
+    <script src="./node_modules/markdown-it-deflist/dist/markdown-it-deflist.min.js"></script>
+    <script src="./node_modules/markdown-it-mark/dist/markdown-it-mark.min.js"></script>
+    <script src="./node_modules/markdown-it-task-lists/dist/markdown-it-task-lists.min.js"></script>
+    <script src="./node_modules/markdown-it-anchor/dist/markdownItAnchor.umd.js"></script>
+    <script src="./node_modules/markdown-it-toc-done-right/dist/markdownItTocDoneRight.umd.js"></script>
     <script>
+        var md = window.markdownit({
+            html: true, //可以识别html
+            linkify: true,//自动检测像链接的文本
+            breaks: true,//回车换行
+            typographer: true,//优化排版，标点
+            //代码高亮
+            highlight: function (str, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    try {
+                        return '<pre class="hljs"><code>' +
+                            hljs.highlight(lang, str, true).value +
+                            '</code></pre>';
+                    } catch (__) {}
+                }
+                return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+            }
+        })
+        .use(window.markdownitSub)
+        .use(window.markdownitSup)
+        .use(window.markdownitFootnote)
+        .use(window.markdownitDeflist)
+        .use(window.markdownitTaskLists)
+        .use(window.markdownitMark)
+        .use(window.markdownItAnchor, {
+            permalink: false,
+            permalinkBefore: false,
+            permalinkSymbol: '#'
+        })
+        .use(window.markdownItTocDoneRight, {
+            containerClass: 'toc',
+            containerId: 'toc',
+            listType: 'ul',
+            listClass: 'listClass',
+            itemClass: 'itemClass',
+            linkClass: 'linkClass',
+            callback: function (html, ast) {
+            //把目录单独列出来
+                left.innerHTML = html;
+            }
+        });
+    </script>
+    <!--代码高亮highlight-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/rainbow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <!-- and it's easy to individually load additional languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/cpp.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <!--解决latex-->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script>
+    MathJax = {
+        tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    
+</head> 
+<body style="background-image:linear-gradient(141deg,#3ec9e4 0%,#1fd9ee 51%,#3ec9e4 99%);">
+    
+    <div style="background-color: rgba(248, 246, 231, 0.898);margin-left: 20vw;margin-right: 20vw;padding-left: 20px;padding-right: 20px;border-radius: 10px;">
+    <script>
+        /*获取文件*/
         function getQueryVariable(variable)
         {
             var query = window.location.search.substring(1);
@@ -13,7 +85,7 @@
                 var pair = vars[i].split("=");
                 if(pair[0] == variable){return pair[1];}
             }
-            return("");
+            return("404.html");
         }
         //console.log(getQueryVariable("file"));
         /*get .md file*/ 
@@ -21,6 +93,11 @@
         //xhr.responseType = "blob"; 
         xhr.open("GET", getQueryVariable("file"), false); 
         xhr.send();
-        document.write(markdown.toHTML(xhr.responseText)); 
-    </script> 
+
+        
+        var md = window.markdownit();
+        document.write(md.render(xhr.responseText));
+    </script>
+    </div>
+    
 </body>
