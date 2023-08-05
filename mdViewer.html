@@ -1,0 +1,26 @@
+<!DOCTYPE html> 
+<head> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"> 
+    <script src="js/markdown-browser-0.6.0-beta1/markdown.min.js"></script> 
+</head> 
+<body style="background-image:linear-gradient(141deg,#3ec9e4 0%,#1fd9ee 51%,#3ec9e4 99%);"> 
+    <script>
+        function getQueryVariable(variable)
+        {
+            var query = window.location.search.substring(1);
+            var vars = query.split("&");
+            for (var i=0;i<vars.length;i++) {
+                var pair = vars[i].split("=");
+                if(pair[0] == variable){return pair[1];}
+            }
+            return("");
+        }
+        //console.log(getQueryVariable("file"));
+        /*get .md file*/ 
+        var xhr = new XMLHttpRequest(); 
+        //xhr.responseType = "blob"; 
+        xhr.open("GET", getQueryVariable("file"), false); 
+        xhr.send();
+        document.write(markdown.toHTML(xhr.responseText)); 
+    </script> 
+</body>
