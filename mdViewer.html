@@ -62,6 +62,11 @@
 
     <!--解决latex-->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script>
+        MathJax = {
+          tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+        };
+    </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
 </head> 
@@ -73,7 +78,7 @@
             font-size: 16px;
         }
     </style>
-    <div style="background-color: rgba(248, 246, 231, 0.898);margin-left: 15vw;margin-right: 15vw;padding-left: 20px;padding-right: 20px;border-radius: 10px;">
+    <div style="background-color: rgba(248, 246, 231, 0.898);margin-left: 15vw;margin-right: 15vw;padding-left: 20px;padding-right: 20px;border-radius: 10px;padding-top: 5px;padding-bottom: 5px;">
     <script>
         /*获取文件*/
         function getQueryVariable(variable)
@@ -93,9 +98,42 @@
         xhr.open("GET", getQueryVariable("file"), false); 
         xhr.send();
 
+        var text = "";
+        var inlatex = 0;
+        for(var i=0;i<xhr.responseText.length;++i)
+        {
+            if(xhr.responseText[i]=='$'&&(i==0||xhr.responseText[i-1]!='$')) {inlatex ^= 1;}
+            if(xhr.responseText[i]=='*'&&inlatex==1)
+            {
+                text += "\\\*";
+                continue;
+            }
+            if(i+2<xhr.responseText.length&&
+                xhr.responseText[i]=='\n'&&
+                xhr.responseText[i+1]=='='&&
+                xhr.responseText[i+2]=='\n'&&
+                inlatex==1)
+            {
+                text += '=';
+                i += 2;
+                continue;
+            }
+            if(i+1<xhr.responseText.length&&
+                xhr.responseText[i]=='\\'&&
+                xhr.responseText[i+1]=='\\'&&
+                inlatex==1)
+            {
+                text += "\\\\\\\\";
+                i += 1;
+                continue;
+            }
+
+            text += xhr.responseText[i];
+        }
+        console.log(text);
         
         var md = window.markdownit();
-        document.write(md.render(xhr.responseText));
+        document.write(md.render(text));
     </script>
     </div>
     
