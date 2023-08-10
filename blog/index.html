@@ -23,9 +23,10 @@
                 var blog = blogs[i].childNodes;
                 for(var j=0;j<blog.length;++j)
                 {
+                    console.log(j);
                     if(blog[j].nodeName=="title");
                     {
-                        document.write('<p id="make">' + blog[j].nodeName + '</p>');
+                        console.log(blog[j].nodeName);
                     }
                 }
             }
