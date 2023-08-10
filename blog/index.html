@@ -23,9 +23,9 @@
                 var blog = blogs[i].childNodes;
                 for(var j=0;j<blog.length;++j)
                 {
-                    if(blog[i].nodeName=="title");
+                    if(blog[j].nodeName=="title");
                     {
-                        document.write('<p id="make">' + blog[i].nodeName + '</p>');
+                        document.write('<p id="make">' + blog[j].childNodes[0].nodeValue + '</p>');
                     }
                 }
             }
