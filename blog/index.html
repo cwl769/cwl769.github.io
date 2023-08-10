@@ -12,16 +12,20 @@
         var xmlDoc = xhr.responseXML;
         var blogs=xmlDoc.getElementsByTagName("blog");
  
+        var cnt = 0;
         for(var i=0;i<blogs.length;++i)
         {
             if(blogs[i].attributes.getNamedItem("visible").nodeValue=="true")
             {
+                ++cnt
+                console.log(blogs[i].nodeName);
+                console.log(cnt);
                 var blog = blogs[i].childNodes;
                 for(var j=0;j<blog.length;++j)
                 {
                     if(blog[i].nodeName=="title");
                     {
-                        document.write('<p id="make">' + blog[i].nodeValue + '</p>');
+                        document.write('<p id="make">' + blog[i].nodeName + '</p>');
                     }
                 }
             }
