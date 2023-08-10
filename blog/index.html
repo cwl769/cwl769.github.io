@@ -17,18 +17,31 @@
         {
             if(blogs[i].attributes.getNamedItem("visible").nodeValue=="true")
             {
-                ++cnt
-                console.log(blogs[i].nodeName);
-                console.log(cnt);
+                ++cnt;
                 var blog = blogs[i].childNodes;
+                var link_address;
+                var intro;
                 for(var j=0;j<blog.length;++j)
                 {
-                    console.log(j);
+                    if(blog[j].nodeName=="link")
+                    {
+                        link_address = blog[j].childNodes[0].nodeValue;
+                        console.log(link_address);
+                    }
+                    if(blog[j].nodeName=="link")
+                    {
+                        intro = blog[j].childNodes[0].nodeValue;
+                        console.log(intro);
+                    }
+                }
+                for(var j=0;j<blog.length;++j)
+                {
                     if(blog[j].nodeName=="title")
                     {
-                        console.log(blog[j].nodeName);
-                        console.log(blog[j].nodeValue);
-                        document.write('<p id="make">' + blog[j].childNodes[0].nodeValue + '</p>');
+                        document.write('<div id=\"blog_container\" onclick=\"location.href=\'' + link_address + '\';\">')
+                        document.write('<h1 id="blog_title">' + blog[j].childNodes[0].nodeValue + '</h1>');
+                        document.write('<p>' + intro + '</p>');
+                        document.write('</div>')
                     }
                 }
             }
