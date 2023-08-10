@@ -24,9 +24,11 @@
                 for(var j=0;j<blog.length;++j)
                 {
                     console.log(j);
-                    if(blog[j].nodeName=="title");
+                    if(blog[j].nodeName=="title")
                     {
                         console.log(blog[j].nodeName);
+                        console.log(blog[j].nodeValue);
+                        document.write('<p id="make">' + blog[j].childNodes[0].nodeValue + '</p>');
                     }
                 }
             }
