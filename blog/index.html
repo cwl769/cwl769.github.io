@@ -5,15 +5,24 @@
 <body style="background-image: url('../source/picture/background0.jpg');background-repeat: no-repeat;background-attachment: fixed;background-size: cover;">
     <script>
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", blog_list.xml, false); 
+        xhr.open("GET", "blog_list.xml", false); 
         xhr.send();
-        xmlDoc = xhr.responseXML;
-        x=xmlDoc.getElementsByTagName("title");
+        var xmlDoc = xhr.responseXML;
+        var blogs=xmlDoc.getElementsByTagName("blog");
  
-        for (i=0;i<x.length;i++)
+        for(var i=0;i<blogs.length;++i)
         {
-        document.write(x[i].childNodes[0].nodeValue);
-        document.write("");
+            if(blogs[i].attributes.getNamedItem("visible").nodeValue=="true")
+            {
+                var blog = blogs[i].childNodes;
+                for(var j=0;j<blog.length;++j)
+                {
+                    if(blog[i].nodeName=="title");
+                    {
+                        document.write('<p id="make">' + blog[i].childNodes[0].nodeValue + '</p>');
+                    }
+                }
+            }
         }
     </script>
 </body>
