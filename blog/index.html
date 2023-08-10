@@ -1,8 +1,10 @@
 <!DOCTYPE html> 
 <head> 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="../style.css">
 </head> 
-<body style="background-image: url('../source/picture/background0.jpg');background-repeat: no-repeat;background-attachment: fixed;background-size: cover;">
+<body id="background_image">
     <script>
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "blog_list.xml", false); 
@@ -19,7 +21,7 @@
                 {
                     if(blog[i].nodeName=="title");
                     {
-                        document.write('<p id="make">' + blog[i].childNodes[0].nodeValue + '</p>');
+                        document.write('<p id="make">' + blog[i].childNodes[0].nodeName + '</p>');
                     }
                 }
             }
