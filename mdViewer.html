@@ -90,12 +90,11 @@
                 var pair = vars[i].split("=");
                 if(pair[0] == variable){return pair[1];}
             }
-            return("404.html");
+            return("404.md");
         }
         //console.log(getQueryVariable("file"));
         /*get .md file*/ 
-        var xhr = new XMLHttpRequest(); 
-        //xhr.responseType = "blob"; 
+        var xhr = new XMLHttpRequest();
         xhr.open("GET", getQueryVariable("file"), false); 
         xhr.send();
 

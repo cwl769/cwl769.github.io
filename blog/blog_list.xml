@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+
+<blog visible="true">
+    <title>板子</title>
+    <intro>符合笔者习惯的各种板子（主要供本人使用）</intro>
+    <link>https://cwl07.github.io/mdViewer.html?file=blog/板子.md</link>
+</blog>
+
+<blog visible="false">
+    <title>数学</title>
+    <intro>一些数学知识</intro>
+    <link>https://cwl07.github.io/mdViewer.html?file=blog/math.md</link>
+</blog>
+
+</root>

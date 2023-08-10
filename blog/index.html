@@ -3,5 +3,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 </head> 
 <body style="background-image: url('../source/picture/background0.jpg');background-repeat: no-repeat;background-attachment: fixed;background-size: cover;">
-        
+    <script>
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", blog_list.xml, false); 
+        xhr.send();
+        xmlDoc = xhr.responseXML;
+        x=xmlDoc.getElementsByTagName("title");
+ 
+        for (i=0;i<x.length;i++)
+        {
+        document.write(x[i].childNodes[0].nodeValue);
+        document.write("");
+        }
+    </script>
 </body>
