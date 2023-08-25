@@ -11,6 +11,7 @@
     <script src="./js/markdown-it-task-lists/dist/markdown-it-task-lists.min.js"></script>
     <script src="./js/markdown-it-anchor/dist/markdownItAnchor.umd.js"></script>
     <script src="./js/markdown-it-toc-done-right/dist/markdownItTocDoneRight.umd.js"></script>
+    <script src="./js/markdown-it-container/dist/markdown-it-container.min.js"></script>
     <script>
         var md = window.markdownit({
             html: true, //可以识别html
@@ -35,6 +36,7 @@
         .use(window.markdownitDeflist)
         .use(window.markdownitTaskLists)
         .use(window.markdownitMark)
+        .use(window.markdownitContainer)
         .use(window.markdownItAnchor, {
             permalink: false,
             permalinkBefore: false,

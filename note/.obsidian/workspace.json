@@ -1,0 +1,160 @@
+{
+  "main": {
+    "id": "4f07300f8cb9623e",
+    "type": "split",
+    "children": [
+      {
+        "id": "ec03fe13e60b828c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c15f2301eadb375d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "左偏树.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "9902f0bc5ed4bd82",
+    "type": "split",
+    "children": [
+      {
+        "id": "fa6cdeb853df1c72",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e3b7405d23130f0a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "2b6195d22c7ab3a4",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "7df1cdfdd9987a9d",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "cd5a302ffba70bfc",
+    "type": "split",
+    "children": [
+      {
+        "id": "c632937c796177ad",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3fbce6b04ccd81e3",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "左偏树.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "8fc570eaaa816e28",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "左偏树.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "d9515f1f4d4bafc0",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "8a43fcb227aa3045",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "左偏树.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "c15f2301eadb375d",
+  "lastOpenFiles": [
+    "左偏树.pdf",
+    "左偏树.aux",
+    "左偏树.log",
+    "左偏树.tex",
+    "pdflatex677375.fls",
+    "左偏树.fls",
+    "pdflatex677328.fls",
+    "左偏树.fdb_latexmk"
+  ]
+}
