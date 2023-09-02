@@ -4,7 +4,7 @@
 <blog visible="true">
     <title>左偏树</title>
     <intro>介绍了一种可并堆——左偏树 以及他的随机化方法及复杂度证明</intro>
-    <link>https://cwl07.github.io/mdViewer.html?file=blog/左偏树.md</link>
+    <link>https://cwl07.github.io/mdViewer.html?file=blog/LeftistTree.md</link>
     <tag>#堆</tag>
     <tag>#可并堆</tag>
     <tag>#左偏树</tag>

@@ -49,6 +49,114 @@ struct DSU
 
 
 
+#### 可持久化并查集
+
+*基于可持久化数组*
+
+```cpp
+struct PersistentArray
+{
+    struct Node
+    {
+        int val;
+        int lson, rson;
+    };
+    static Node pool[SIZE];
+    static int pool_cnt;
+    int newNode()
+    {
+        ++pool_cnt;pool[pool_cnt] = {0, 0, 0};
+        return pool_cnt;
+    }
+    std::vector<int> root;
+    int dL, dR;
+    
+    PersistentArray(int l, int r)
+    {
+        root.push_back(newNode());
+        dL = l;dR = r;
+        build(root[0], dL, dR);
+    }
+    void build(int rt, int l, int r)
+    {
+        if(l==r){pool[rt].val = l;return;}
+        int mid = ((l+r)>>1);
+        pool[rt].lson = newNode();build(pool[rt].lson, l, mid);
+        pool[rt].rson = newNode();build(pool[rt].rson, mid+1, r);
+    }
+    int change(int rt, int p, int val)
+    {
+        int newrt = newNode();
+        find_c(rt, newrt, dL, dR, p) = val;
+        return newrt;
+    }
+    int& find_c(int rt, int newrt, int l, int r, const int p)
+    {
+        if(l==r){pool[newrt] = pool[rt];return pool[newrt].val;}
+        int mid = ((l+r)>>1);
+        pool[newrt] = pool[rt];
+        if(p<=mid){pool[newrt].lson=newNode();return find_c(pool[rt].lson, pool[newrt].lson, l, mid, p);}
+        else {pool[newrt].rson=newNode();return find_c(pool[rt].rson, pool[newrt].rson, mid+1, r, p);}
+    }
+    int find_q(int rt, int l, int r, int p)
+    {
+        if(l==r){return pool[rt].val;}
+        int mid = ((l+r)>>1);
+        if(p<=mid){return find_q(pool[rt].lson, l, mid, p);}
+        else {return find_q(pool[rt].rson, mid+1, r, p);}
+    }
+    void print_s(int rt, int l, int r)
+    {
+        if(l==r){printf("%d ", pool[rt].val);return ;}
+        int mid = ((l+r)>>1);
+        print_s(pool[rt].lson, l, mid);
+        print_s(pool[rt].rson, mid+1, r);
+    }
+    void print()
+    {
+        print_s(root[root.size()-1], dL, dR);
+        printf("\n");
+    }
+};
+PersistentArray::Node PersistentArray::pool[SIZE];
+int PersistentArray::pool_cnt = -1;
+
+int get(int x, PersistentArray& fa, int& root)
+{
+    int faa = fa.find_q(root, fa.dL, fa.dR, x);
+    if(faa==x)
+        return x;
+    int anc = get(faa, fa, root);
+    fa.pool[root] = fa.pool[fa.change(root, x, anc)]; /*tag1*/
+    return anc;
+}
+```
+
+在主函数中:
+
+```cpp
+int tmp = arr.root[id-1];
+a = get(a, arr, tmp);
+b = get(b, arr, tmp);
+arr.root.push_back(tmp);
+```
+
+**WARNING: 上述片段的第74行(倒数第3行)，即末尾有tag1的一行 这一行很值得品位**
+
+**此行在可持久化数组上修改了一个节点(即创建了一个新根)，并将旧根赋值为新根，这样保证一个版本的全部修改都在一个根上可以访问到**
+
+![image](../source/picture/note/banzi001.gif)
+
+**如上图为含有三个版本的并查集(由于路径压缩，查询也需要记入一个版本)**
+
+**黑色线是各版本对应的根，而蓝色线为本版本实际应访问的入口**
+
+**上述的赋值操作保证了从黑色线也能进入蓝线所指向的位置**
+
+**实现上，黑线指向的位置在主函数中体现为 `tmp` 变量**
+
+
+
 #### 树状数组
 
 ```cpp
@@ -322,7 +430,68 @@ struct Graph
 
 
 
-#### LCA(dfs序 + ST) [^2]
+#### LCA(dfs序 + ST) 
+
+参考:[luogu 上关于此的介绍](https://www.luogu.com.cn/blog/AlexWei/leng-men-ke-ji-dfs-xu-qiu-lca)
+
+```cpp
+std::vector<int> dep_bydfs;
+std::vector<int> dfs_seq;
+int dfn[500010], dfn_tot=0;
+int faa[500010];
+void dfs(int rt, int fa, const Graph& g, int dep)
+{
+    faa[rt] = fa;
+    dfn[rt] = ++dfn_tot;
+    dep_bydfs.push_back(dep);
+    dfs_seq.push_back(rt);
+    for(int i=g.h[rt],y;i;i=g.edg[i].next)
+    {
+        y = g.edg[i].to;
+        if(y==fa)continue;
+        dfs(y, rt, g, dep+1);
+    }
+}
+int dep_st[500010][20];
+int dep_st_posi[500010][20];
+void lca_init(const Graph& g, const int& n)
+{
+    dep_bydfs.push_back(0);
+    dfs_seq.push_back(0);
+    dfs(ROOT, 0, g, 1);
+    for(int i=1;i<=n;++i)
+    {
+        dep_st[i][0] = dep_bydfs[i];
+        dep_st_posi[i][0] = dfs_seq[i];
+    }
+    for(int j=1;j<20;++j)
+        for(int i=1;i<=n-(1<<j)+1;++i)
+        {
+            dep_st[i][j] = wlmin(dep_st[i][j-1], dep_st[i+(1<<(j-1))][j-1]);
+            if(dep_st[i][j-1]<=dep_st[i+(1<<(j-1))][j-1])
+            {
+                dep_st[i][j] = dep_st[i][j-1];
+                dep_st_posi[i][j] = dep_st_posi[i][j-1];
+            }
+            else
+            {
+                dep_st[i][j] = dep_st[i+(1<<(j-1))][j-1];
+                dep_st_posi[i][j] = dep_st_posi[i+(1<<(j-1))][j-1];
+            }
+        }
+    return ;
+}
+int lca(int x, int y)
+{
+    if(x==y)return x;
+    int a = dfn[x], b=dfn[y];if(a>b)wlswap(a,b);++a;
+    int len = log2(b - a + 1);
+    int amin=dep_st[a][len], aminp=dep_st_posi[a][len];
+    int bmin=dep_st[b - (1<<len) + 1][len], bminp=dep_st_posi[b - (1<<len) + 1][len];
+    if(amin<=bmin){return faa[aminp];}
+    else {return faa[bminp];}
+}
+```
 
 
 
@@ -440,4 +609,3 @@ struct ST_table
 
 
 [^1]: 可能存在缺陷，需要更新
-[^2]: **需要更新**
