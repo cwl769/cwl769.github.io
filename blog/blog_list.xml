@@ -10,4 +10,10 @@
     <tag>#左偏树</tag>
 </blog>
 
+<blog visible="false">
+    <title>Template</title>
+    <intro>templates</intro>
+    <link>https://cwl07.github.io/mdViewer.html?file=note/template.md</link>
+</blog>
+
 </root>

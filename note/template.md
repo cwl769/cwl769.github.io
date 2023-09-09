@@ -198,202 +198,6 @@ struct BIT
 
 
 
-#### 线段树
-
-```cpp
-struct SegmentTree
-{
-    struct Node
-    {
-        Node *lson, *rson;
-        ll data;
-        ll plus;
-
-        Node()
-        {
-            lson = NULL;rson = NULL;
-            data = plus = 0;
-        }
-        inline void update(const Node& lson, const Node& rson)
-        {
-            data = lson.data + rson.data;
-            return;
-        }
-    };
-    Node* root;
-    int dl, dr;
-    Node *pool;int pool_tot;
-
-    SegmentTree(int l, int r)
-    {
-        dl = l;dr = r;
-        root = new Node;
-        createPool((r - l + 1 + 10)<<1);pool_tot = 0;
-    }
-    virtual ~SegmentTree()
-    {
-        delete[] pool;pool=NULL;
-        delete root;root=NULL;
-    }
-    void createPool(int num)
-    {
-        pool = new Node[num];
-    }
-    Node* newNode()
-    {
-        return pool+(++pool_tot);
-    }
-    void build(Node& rt, int l, int r, const ll *arr)
-    {
-        if(l==r)
-        {
-            rt.data = arr[l];
-            return;
-        }
-        int mid = ((l + r) >> 1);
-        rt.lson = newNode();
-        rt.rson = newNode();
-        build(*rt.lson, l, mid, arr);
-        build(*rt.rson, mid+1, r, arr);
-        rt.update(*rt.lson, *rt.rson);
-    }
-    void spread(Node& rt, int l, int r)
-    {
-        (*rt.lson).plus += rt.plus;
-        (*rt.rson).plus += rt.plus;
-        int mid = ((l + r) >> 1);
-        (*rt.lson).data += (ll)(mid - l + 1ll) * rt.plus;
-        (*rt.rson).data += (ll)(r - mid) * rt.plus;
-        rt.plus = 0;
-    }
-    void range_change(Node& rt, int l, int r, int ql, int qr, const ll& plus)
-    {
-        if(l==ql&&r==qr)
-        {
-            rt.plus += plus;
-            rt.data += (ll)(r - l + 1ll) * plus;
-            return;
-        }
-        spread(rt, l, r);
-        int mid = ((l + r) >> 1);
-        if(qr<=mid){range_change(*rt.lson, l, mid, ql, qr, plus);}
-        else if(ql>mid){range_change(*rt.rson, mid+1, r, ql, qr, plus);}
-        else 
-        {
-            range_change(*rt.lson, l, mid, ql, mid, plus);
-            range_change(*rt.rson, mid+1, r, mid+1, qr, plus);
-        }
-        rt.update(*rt.lson, *rt.rson);
-    }
-    ll range_query(Node&rt, int l, int r, int ql, int qr)
-    {
-        if(l==ql&&r==qr)
-        {
-            return rt.data;
-        }
-        spread(rt, l, r);
-        int mid = ((l + r) >> 1);
-        if(qr<=mid){return range_query(*rt.lson, l, mid, ql, qr);}
-        else if(ql>mid){return range_query(*rt.rson, mid+1, r, ql, qr);}
-        else
-        {
-            return range_query(*rt.lson, l, mid, ql, mid) + range_query(*rt.rson, mid+1, r, mid+1, qr);
-        }
-    }
-};
-```
-
-**以上为动态开点线段树的例子，以 洛谷P3372 为例 。实际应用中线段树灵活性强，需要结合题意设计**
-
-**以上例子使用了内存池 实测用new开辟会慢一些**
-
-###### 复杂度
-
-`build(Node& rt, int l, int r, const ll *arr);`  -> $O(N)$
-
-`spread(Node& rt, int l, int r);`  -> $O(1)$
-
-`range_change(Node& rt, int l, int r, int ql, int qr, const ll& plus);`  -> $O(\log N)$
-
-`range_query(Node&rt, int l, int r, int ql, int qr);`  -> $O(\log N)$
-
-
-
-#### 可持久化数组（线段树）[^1]
-
-```cpp
-template<typename T>
-struct PersistentArray
-{
-    struct Node
-    {
-        T val;
-        Node *lson, *rson;
-    };
-    Node* newNode()
-    {
-        static Node Node_pool[10000000];
-        static int poolcnt = -1;
-        return Node_pool + (++poolcnt);
-    }
-    std::vector<Node*> root;
-    int dL, dR;
-
-    PersistentArray(int l, int r)
-    {
-        root.clear();root.push_back(newNode());
-        dL = l;dR = r;
-    }
-    ~PersistentArray(){}
-    void build(Node *rt, int l, int r)
-    {
-        if(l==r){return;}
-        int mid = ((l+r)>>1);
-        rt->lson = newNode();
-        rt->rson = newNode();
-        build(rt->lson, l, mid);
-        build(rt->rson, mid+1, r);
-    }
-    void build(Node *rt, int l, int r, T* arr)
-    {
-        if(l==r){rt->val = arr[l];return;}
-        int mid = ((l+r)>>1);
-        rt->lson = newNode();
-        rt->rson = newNode();
-        build(rt->lson, l, mid, arr);
-        build(rt->rson, mid+1, r, arr);
-    }
-    T& findp(Node* rt, Node* newrt, int l, int r, const int p)
-    {
-        if(l==r){(*newrt) = (*rt);return newrt->val;}
-        int mid = ((l+r)>>1);
-        (*newrt) = (*rt);
-        if(p<=mid)
-        {
-            newrt->lson = newNode();
-            return findp(rt->lson, newrt->lson, l, mid, p);
-        }
-        else
-        {
-            newrt->rson = newNode();
-            return findp(rt->rson, newrt->rson, mid+1, r, p);
-        }
-    }
-};
-```
-
-**提供了空初始化和数组初始化两种build方式**
-
-**`findp()`函数返回引用，故既可当作右值，又可当作左值**
-
-###### 复杂度
-
-`build()`  -> $O(N)$  (相当于访问二叉树的每一个节点 )
-
-`findp()`  -> $O(\log N)$ 
-
-
-
 ### 图论
 
 #### 邻接表
@@ -430,70 +234,84 @@ struct Graph
 
 
 
-#### LCA(dfs序 + ST) 
-
-参考:[luogu 上关于此的介绍](https://www.luogu.com.cn/blog/AlexWei/leng-men-ke-ji-dfs-xu-qiu-lca)
+#### LCA(Tarjan)
 
 ```cpp
-std::vector<int> dep_bydfs;
-std::vector<int> dfs_seq;
-int dfn[500010], dfn_tot=0;
-int faa[500010];
-void dfs(int rt, int fa, const Graph& g, int dep)
+struct LCA_Tarjan
 {
-    faa[rt] = fa;
-    dfn[rt] = ++dfn_tot;
-    dep_bydfs.push_back(dep);
-    dfs_seq.push_back(rt);
-    for(int i=g.h[rt],y;i;i=g.edg[i].next)
+    Graph *g;
+    Graph *query;
+    int *ans, *fa, *mk;
+    
+    LCA_Tarjan(Graph *g_ptr, int n)
     {
-        y = g.edg[i].to;
-        if(y==fa)continue;
-        dfs(y, rt, g, dep+1);
+        g = g_ptr;
+        query = new Graph(n);
+        ans = NULL;
+        fa = (int*)malloc((n+10)*sizeof(int));
+        for(int i=1;i<=n;++i)
+            fa[i] = i;
+        mk = (int*)calloc(n+10, sizeof(int));
     }
-}
-int dep_st[500010][20];
-int dep_st_posi[500010][20];
-void lca_init(const Graph& g, const int& n)
-{
-    dep_bydfs.push_back(0);
-    dfs_seq.push_back(0);
-    dfs(ROOT, 0, g, 1);
-    for(int i=1;i<=n;++i)
+    ~LCA_Tarjan()
     {
-        dep_st[i][0] = dep_bydfs[i];
-        dep_st_posi[i][0] = dfs_seq[i];
+        delete query;query=NULL;
+        free(ans);ans=NULL;
+        free(fa);fa=NULL;
+        free(mk);mk=NULL;
     }
-    for(int j=1;j<20;++j)
-        for(int i=1;i<=n-(1<<j)+1;++i)
+    void add(int id, int x, int y)
+    {
+        query->add(x, y, id);
+        query->add(y, x, id);
+    }
+    int get(int x)
+    {
+        if(fa[x]==x){return x;}
+        return fa[x] = get(fa[x]);
+    }
+    void dfs(int rt, int fath)
+    {
+        mk[rt] = 1;
+        for(int i=g->h[rt],y;i;i=g->edg[i].next)
         {
-            dep_st[i][j] = wlmin(dep_st[i][j-1], dep_st[i+(1<<(j-1))][j-1]);
-            if(dep_st[i][j-1]<=dep_st[i+(1<<(j-1))][j-1])
+            y = g->edg[i].to;
+            if(y==fath)continue;
+            dfs(y, rt);
+        }
+        for(int i=query->h[rt],y;i;i=query->edg[i].next)
+        {
+            y = query->edg[i].to;
+            if(mk[y]==2||rt==y)
             {
-                dep_st[i][j] = dep_st[i][j-1];
-                dep_st_posi[i][j] = dep_st_posi[i][j-1];
-            }
-            else
-            {
-                dep_st[i][j] = dep_st[i+(1<<(j-1))][j-1];
-                dep_st_posi[i][j] = dep_st_posi[i+(1<<(j-1))][j-1];
+                int rty = get(y);
+                ans[query->edg[i].val] = rty;
             }
         }
-    return ;
-}
-int lca(int x, int y)
-{
-    if(x==y)return x;
-    int a = dfn[x], b=dfn[y];if(a>b)wlswap(a,b);++a;
-    int len = log2(b - a + 1);
-    int amin=dep_st[a][len], aminp=dep_st_posi[a][len];
-    int bmin=dep_st[b - (1<<len) + 1][len], bminp=dep_st_posi[b - (1<<len) + 1][len];
-    if(amin<=bmin){return faa[aminp];}
-    else {return faa[bminp];}
-}
+
+        mk[rt] = 2;
+        fa[rt] = fath;
+    }
+    void cal(int rt)
+    {
+        ans = (int*)malloc((query->edg.size()/2)*sizeof(int));
+        dfs(rt, 0);
+    }
+};
 ```
 
+**in main()**
 
+```cpp
+LCA_Tarjan lca(&g, n);
+for(int i=1;i<=m;++i)lca.add(i, x, y);
+lca.cal(root);
+for(int i=1;i<=m;++i)printf("%d\n", lca.ans[i]);
+```
+
+###### 复杂度
+
+离线处理所有询问总复杂度 $O(n+m)$ 其中 $n$ 为节点个数，$m$ 为询问个数
 
 
 
@@ -542,69 +360,6 @@ template<typename T> inline T wlmax(T a, T b){return (a<b)?b:a;}
 ###### 复杂度
 
 均为 $O(1)$
-
-
-
-#### ST表
-
-```cpp
-inline int log2(int x){int cnt=-1;for(;x;x>>=1)++cnt;return cnt;}
-template<typename T>
-struct ST_table
-{
-    T* data;
-    T** st;
-    int N;
-    T (*FUNC)(T a, T b);
-
-    ST_table(T* ori, int n, T (*func)(T a, T b))
-    {
-        data = ori;
-        N = n;FUNC = func;
-        int t = log2(N);
-        st = (T**)malloc((t+1)*sizeof(T*));
-        for(int i=0;i<=t;++i){st[i] = (T*)calloc(n+1, sizeof(T));}
-        init();
-    }
-    ~ST_table()
-    {
-        int t = log2(N);
-        for(int i=0;i<=t;++i){free(st[i]);st[i]=NULL;}
-        free(st);st=NULL;
-    }
-    void init()
-    {
-        for(int i=1;i<=N;++i)
-        {
-            st[0][i] = data[i];
-        }
-        int t = log2(N);
-        for(int i=1;i<=t;++i)
-        {
-            int m = (1<<i);int m_half = (1<<(i-1));
-            int lim = N - m + 1;
-            for(int l=1;l<=lim;++l)
-                {st[i][l] = FUNC(st[i-1][l], st[i-1][l+m_half]);}
-        }
-    }
-    T query(int l, int r)
-    {
-        int len = r - l + 1;
-        int t = log2(len);
-        return FUNC(st[t][l], st[t][r - (1<<t) + 1]);
-    }
-};
-```
-
-###### 例题
-
-[Balanced Lineup G](https://www.luogu.com.cn/problem/P2880)
-
-###### 复杂度
-
-`init()`  -> $O(N\log N)$
-
-`query(int l, int r)`  -> $O(1)$
 
 
 
