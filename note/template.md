@@ -315,6 +315,36 @@ for(int i=1;i<=m;++i)printf("%d\n", lca.ans[i]);
 
 
 
+### 数学
+
+#### 同余
+
+```cpp
+typedef long long int64;
+struct Int
+{
+    static int64 MOD;
+    int64 val;
+    Int(){val=0ll;}
+    Int(int x){val=(x%MOD+MOD)%MOD;}
+    Int(int64 x){val=(x%MOD+MOD)%MOD;}
+    Int operator + (Int b){return Int((val+b.val)%MOD);}
+    Int operator - (Int b){return Int(((val-b.val)%MOD+MOD)%MOD);}
+    Int operator * (Int b){return Int((val*b.val)%MOD);}
+    void operator += (Int b){val=(val+b.val)%MOD;}
+    void operator -= (Int b){val=((val-b.val)%MOD+MOD)%MOD;}
+    void operator *= (Int b){val=(val*b.val)%MOD;}
+};
+int64 Int::MOD = 998244353;
+```
+
+**注:** 
+
+-   `998244353` 可替换成任意需要用的模数
+-   未写出除法运算，但实际上可以通过求逆元得到除法运算的定义
+
+
+
 ### 杂项
 
 #### 离散化
