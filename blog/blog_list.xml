@@ -16,4 +16,11 @@
     <link>https://cwl07.github.io/mdViewer.html?file=note/template.md</link>
 </blog>
 
+<blog visible="true">
+    <title>Modulo Int</title>
+    <intro>适用于对答案取模的题目，可以减少代码复杂度</intro>
+    <link>https://cwl07.github.io/mdViewer.html?file=blog/ModuloInt.md</link>
+    <tag>#数学</tag>
+</blog>
+
 </root>
