@@ -103,7 +103,7 @@
         //console.log(getQueryVariable("file"));
         /*get .md file*/ 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", getQueryVariable("file"), false); 
+        xhr.open("GET", getQueryVariable("file")+"?r="+Math.random()*1e18, false); 
         xhr.send();
 
         var text = "";
