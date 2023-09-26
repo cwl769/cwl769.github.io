@@ -108,11 +108,14 @@ LeftistTree<T>* merge(LeftistTree<T>* a, LeftistTree<T>* b)
 
 若 $Ls$ 与 $Rs$ 满足
 $$
-Eh(Ls) \leq \log(N_{L} + 1) \\
-Eh(Rs) \leq \log(N_{R} + 1)
+\begin{gather}
+Eh(Ls) \leq \log(N_{L} + 1) \nonumber\\
+Eh(Rs) \leq \log(N_{R} + 1) \nonumber
+\end{gather}
 $$
 则
 $$
+\begin{equation}
 \begin{aligned}
 Eh(T) &= 1 + \frac{Eh(Ls) + Eh(Rs)}{2} \\
 &\leq 1 + \frac{\log ((N_{L}+1)(N_R+1))}{2} \\
@@ -120,7 +123,8 @@ Eh(T) &= 1 + \frac{Eh(Ls) + Eh(Rs)}{2} \\
 &= \log\left( 2 * \sqrt{(N_{L}+1)(N_R+1)} \right) \\
 &\leq \log(N_{L} + N_{R} + 2) \\
 &= \log(N_{T} + 1)
-\end{aligned}
+\end{aligned}\nonumber
+\end{equation}
 $$
 即
 $$
