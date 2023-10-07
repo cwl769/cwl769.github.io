@@ -4,10 +4,12 @@
 <blog visible="true">
     <title>左偏树</title>
     <intro>介绍了一种可并堆——左偏树 以及他的随机化方法及复杂度证明</intro>
-    <link>https://cwl07.github.io/mdViewer.html?file=blog/LeftistTree.md&amp;ti=左偏树</link>
+    <link>https://cwl07.github.io/mdViewer.html?file=blog/LeftistTree.md&amp;ti=LeftistTree</link>
     <tag>#堆</tag>
+    <tag>#Heap</tag>
     <tag>#可并堆</tag>
     <tag>#左偏树</tag>
+    <tag>Data_Structure</tag>
 </blog>
 
 <blog visible="false">
@@ -21,6 +23,7 @@
     <intro>适用于对答案取模的题目，可以减少代码复杂度</intro>
     <link>https://cwl07.github.io/mdViewer.html?file=blog/ModuloInt.md&amp;ti=ModuloInt</link>
     <tag>#数学</tag>
+    <tag>#Math</tag>
 </blog>
 
 </root>

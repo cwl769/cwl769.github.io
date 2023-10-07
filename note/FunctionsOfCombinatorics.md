@@ -22,4 +22,4 @@ $$
 
 [YBTOJ NOIP2023 Day2 C](https://www.ybtoj.com.cn/contest/477/problem/3)
 
-![Screenshot](../source/screenshot/YBTOJ/NOIP2023_Day2_C/problem.png)
+![Screenshot](../source/screenshot/YBTOJ/NOIP2023/Day2/C/problem.png)
