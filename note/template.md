@@ -198,6 +198,242 @@ struct BIT
 
 
 
+#### Splay
+
+```cpp
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <climits>
+#include <queue>
+typedef long long int64;
+typedef long long unsigned uint64;
+typedef int unsigned uint32;
+
+constexpr uint32 SPLAY_POOL_SIZE = 200010;
+struct Splay
+{
+    typedef int key_t;
+    typedef uint32 rank_t;
+    typedef uint32 size_t;
+    struct Node
+    {
+        key_t key;
+        size_t cnt, size;
+
+        Node *fa, *son[2];
+        void clear(){key=0;cnt=size=0;fa=son[0]=son[1]=nullptr;}
+    };
+    static Node pool[SPLAY_POOL_SIZE];
+    static int pool_cnt;
+    static std::queue<Node*> pool_q;
+    Node *newNode()
+    {
+        if(pool_q.size()){Node *ans = pool_q.front();pool_q.pop();return ans;}
+        return pool + (++pool_cnt);
+    }
+    void deleteNode(Node *p)
+    {
+        p->clear();
+        pool_q.push(p);
+    }
+
+    Node *root;
+    Splay():root(nullptr){}
+    void update(Node *p)
+    {
+        if(p==nullptr)return;
+        p->size = p->cnt;
+        if(p->son[0]!=nullptr)p->size += p->son[0]->size;
+        if(p->son[1]!=nullptr)p->size += p->son[1]->size;
+    }
+    bool get(Node *p)
+    {
+        return p->fa->son[1] == p;
+    }
+    void rotate(Node *p)
+    {
+        if(p==nullptr)return;
+        if(p->fa==nullptr)return;
+
+        Node *fa, *ffa, *s;
+        bool which = get(p);
+        fa = p->fa;
+        ffa = p->fa->fa;
+        s = p->son[!which];
+
+        if(ffa!=nullptr)ffa->son[get(fa)] = p;
+        fa->son[which] = s;
+        p->son[!which] = fa;
+        if(s!=nullptr)s->fa = fa;
+        p->fa = ffa;
+        fa->fa = p;
+
+        update(fa);
+        update(p);
+    }
+    void splay(Node *p, Node *tar = nullptr)
+    {
+        for(;p->fa!=tar;)
+        {
+            if(p->fa->fa!=tar) rotate((get(p->fa)==get(p))? p->fa : p );
+            rotate(p);
+        }
+        if(tar==nullptr)root = p;
+    }
+    bool extract(key_t key)
+    {
+        Node *p = root;
+        for(;;)
+        {
+            if(p==nullptr)return false;
+            if(p->key==key)
+            {
+                splay(p);
+                return true;
+            }
+            p = p->son[key > p->key];
+        }
+    }
+    Node* prev()
+    {
+        if(root->son[0]==nullptr)return nullptr;
+        Node *p = root->son[0];
+        for(;p->son[1]!=nullptr;)p = p->son[1];
+        return p;
+    }
+    Node* next()
+    {
+        if(root->son[1]==nullptr)return nullptr;
+        Node *p = root->son[1];
+        for(;p->son[0]!=nullptr;)p = p->son[0];
+        return p;
+    }
+
+    void insert(key_t key)
+    {
+        Node *p = root, *fa = nullptr;
+        for(;;)
+        {
+            if(p==nullptr)
+            {
+                p = newNode();
+                if(fa!=nullptr) fa->son[key > fa->key] = p;
+                p->fa = fa;
+                p->key = key;
+                p->cnt = 1;
+                update(p);update(fa);
+                splay(p);
+                return;
+            }
+            if(p->key==key)
+            {
+                ++p->cnt;
+                update(p);update(fa);
+                splay(p);
+                return;
+            }
+            fa = p;p = p->son[key > p->key];
+        }
+    }
+    void erase(key_t key)
+    {
+        extract(key);
+        if(root->cnt > 1)
+        {
+            --root->cnt;
+            update(root);
+            return;
+        }
+        if(root->son[0]==nullptr&&root->son[1]==nullptr)
+        {
+            deleteNode(root);root=nullptr;
+            return;
+        }
+        if(root->son[0]==nullptr)
+        {
+            Node *old_root = root;
+            root = root->son[1];
+            root->fa = nullptr;
+            deleteNode(old_root);old_root=nullptr;
+            return;
+        }
+        if(root->son[1]==nullptr)
+        {
+            Node *old_root = root;
+            root = root->son[0];
+            root->fa = nullptr;
+            deleteNode(old_root);old_root=nullptr;
+            return;
+        }
+        Node *old_root = root;
+        splay(prev());
+        root->son[1] = old_root->son[1];
+        old_root->son[1]->fa = root;
+        deleteNode(old_root);old_root=nullptr;
+        return;
+    }
+    key_t find_by_rank(rank_t rank)
+    {
+        Node *p = root;
+        for(;;)
+        {
+            if(p==nullptr)return INT_MAX;
+            size_t size0 = (p->son[0]==nullptr)? 0 : p->son[0]->size ;
+            if(size0<=rank&&rank<size0+p->cnt)
+            {
+
+                return p->key;
+            }
+            if(rank<size0)
+            {
+                p = p->son[0];
+            }
+            else
+            {
+                rank -= size0 + p->cnt;
+                p = p->son[1];
+            }
+        }
+    }
+    rank_t query_rank(key_t key)
+    {
+        insert(key);
+        extract(key);
+        rank_t rank = (root->son[0]==nullptr)? 0 : root->son[0]->size ;
+        erase(key);
+        return rank;
+    }
+    key_t prev(key_t key)
+    {
+        insert(key);
+        extract(key);
+        Node *p = prev();
+        key_t ans = (p==nullptr)? INT_MIN : p->key ;
+        erase(key);
+        return ans;
+    }
+    key_t next(key_t key)
+    {
+        insert(key);
+        extract(key);
+        Node *p = next();
+        key_t ans = (p==nullptr)? INT_MIN : p->key ;
+        erase(key);
+        return ans;
+    }
+};
+Splay::Node Splay::pool[SPLAY_POOL_SIZE];
+int Splay::pool_cnt;
+std::queue<Splay::Node*> Splay::pool_q;
+```
+
+>   record:
+>
+>   2023-10-13 07:15 a.m. 36min
+
+
+
 ### 图论
 
 #### 邻接表
