@@ -86,6 +86,13 @@
         }
         document.write("<title>"+ getQueryVariable("ti") + "  ˗ˋˏᰔᩚˎˊ˗" +"</title>");
     </script>
+    
+    <!--gitalk-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>  
+    
+    <!--MD5-->
+    <script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script>
 </head> 
 <body id="background_image">
     
@@ -145,5 +152,20 @@
         document.write(md.render(text));
     </script>
     </div>
+    <div id="gitalk-container"></div>
+    <script>
+        var gitalk = new Gitalk({
+            clientID: '06b7bf49b52e3a3427ec',
+            clientSecret: '283f761c6687b50cb26c65056be0d98693ed58d6',
+            repo: 'cwl07.github.io',
+            owner: 'cwl07',
+            admin: ['cwl07'],
+            id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+            language: 'zh-CN',
+            distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container');
+    </script>
     
 </body>
