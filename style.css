@@ -19,7 +19,10 @@ div#blog_container
     padding-top: 1px;
     padding-bottom: 1px;
 }
-img
+#blog-container img
 {
     object-fit: contain;
+    margin-left: 3%;
+    margin-right: 3%;
+    width: 94%;
 }
