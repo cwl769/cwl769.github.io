@@ -32,5 +32,7 @@ div#blog_container
     margin-top: 30px;
     margin-bottom 10px;
     border-radius: 5px;
-    
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
 }
