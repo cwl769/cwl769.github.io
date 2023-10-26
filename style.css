@@ -1,6 +1,6 @@
 body#background_image
 {
-    background-image: url('source/picture/background0.jpg');
+    background-image: url('source/picture/background/background1.jpg');
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
@@ -25,4 +25,12 @@ div#blog_container
     margin-left: 3%;
     margin-right: 3%;
     width: 94%;
+}
+#gitalk-container
+{
+    background-color: rgba(248, 246, 231, 0.5);
+    margin-top: 30px;
+    margin-bottom 10px;
+    border-radius: 5px;
+    
 }
