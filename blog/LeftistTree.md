@@ -1,5 +1,10 @@
 ## 左偏树（可并堆）
 
+### 约定
+
+- 本文中 $\log$ 一般以 $2$ 为底。
+- 示例代码及讲解均为小根堆
+
 ### dist 的定义与性质[^1]
 
 #### 定义
@@ -36,36 +41,13 @@
 
 左偏树是一种可并堆，支持堆的基本操作（插入 获取堆顶 弹出堆顶），还支持合并操作。
 
+#### 合并
+
 设有两颗左偏树 $A$ 、$B$，根分别为 $root_{A}, root_{B}$，其合并流程为（以小根堆为例）：
 
 1. 选择 $root_{A}, root_{B}$ 中较小的作为合并后的根节点 $root$ （这里不妨设 $root_{A} \leq root_{B}$ ）。
-
 2. 递归的合并 根节点的右儿子和 $B$ ，即 $merge(lson_{root}, B)$。
-
 3. 更新根节点的 `dist` 值，维护左偏性质。
-
-##### 代码[^3]
-
-
-```cpp
-template<typename T>
-LeftistTree<T>* merge(LeftistTree<T>* a, LeftistTree<T>* b)
-{
-    if(a==NULL){return b;}
-    if(b==NULL){return a;}
-    if((b->data) < (a->data))wlswap(a, b);//1.选择较小节点
-    a->rson = merge(a->rson, b);//2.递归合并
-    /*3.更新dist值 维护左偏性质*/
-    if(a->lson==NULL)
-        swap(a->lson, a->rson);
-    else if(a->rson!=NULL&&(a->lson->dist) < (a->rson->dist))
-        wlswap(a->lson, a->rson);
-    else{}
-    if(a->rson!=NULL)a->dist = a->rson->dist + 1;
-    else a->dist = 1;
-    return a;
-}
-```
 
 ##### 复杂度
 
@@ -73,21 +55,18 @@ $O(\log N)$。
 
 上述合并过程本质上是从根节点沿右儿子走向一个空节点，由 `dist` 性质可得递归层数最多为 $\lceil \log (n+1) \rceil$ ，于是复杂度得证。
 
-
-
-#### 随机化[^4]
+#### 随机合并[^3]
 
 观察合并过程，发现维护左偏的目的是走向 `dist` 更小的一个儿子，由此可以放弃存储 `dist` 改用另外的方式实现上述过程，即采用随机走向左右儿子方式。
 
 ```cpp
-template<typename T>
-LeftistTree<T>* merge(LeftistTree<T>* a, LeftistTree<T>* b)
+Node* merge(Node* a, Node* b)
 {
-    if(a==NULL){return b;}
-    if(b==NULL){return a;}
-    if((b->data) < (a->data))wlswap(a, b);
-    if(rand()&1)wlswap(a->lson, a->rson);
-    a->rson = merge(a->rson, b);
+    if(a==nullptr)return b;
+    if(b==nullptr)return a;
+    if(a->val > b->val)swap(a, b);
+    if(myrand()&1)swap(a->son[0], a->son[1]);//在这里随机选择走向哪个儿子
+    a->son[1] = merge(a->son[1], b);
     return a;
 }
 ```
@@ -139,25 +118,39 @@ $$
 Eh(ROOT) \leq \log(N_{ROOT} + 1)
 $$
 
-##### 关于极端情况的概率
 
-易知长度为 $|p|$ 的路径 $p$ 被选择的概率为 $2^{-|p|}$。
+#### 取堆顶
 
-设有正实数 $c$ ，事件 $A$ 为在从根出发所有路径中选择集合 $S = \{ p \;\big|\; |p|>(c+1)\log N \}$ 中的路径
+返回根节点值即可
 
-则有
-$$
-P(A) = \sum_{p \in S}2^{-|p|} < |S| * 2^{-(c+1)\log N} = \frac{|S| * N^{-c}}{N} < N^{-c}
-$$
-因此，达到更深递归深度的概率越来越小。
+```cpp
+inline int64 top() const {return root->val;}
+```
 
-考虑退化到 $O(N)$ 的概率。此时 $c = O(\frac{N}{\log N})$ ，故概率为 $O(N^{-\frac{N}{\log N}})$。
+#### 弹出堆顶
 
-当 $N$ 达到 $10^{5}$ 数量级时， 上述概率约为 $\frac{1}{10^{30000}}$ ，是一个极小的数字。
+合并根节点的左右子树，然后删除旧根节点
 
-&nbsp;
+```cpp
+void pop()
+{
+    Node *old_root = root;
+    root = merge(root->son[0], root->son[1]);
+    delete old_root;old_root = nullptr;
+}
+```
 
-&nbsp;
+#### 插入
+
+新建一颗左偏树，其根节点值为要插入的值，然后合并两棵树
+
+```cpp
+void insert(int64 v)
+{
+    Node *node = new Node(v);
+    root = merge(root, node);
+}
+```
 
 &nbsp;
 
@@ -167,21 +160,54 @@ $$
 
 ---
 
-### 约定
-
-- 本文中 $\log$ 一般以 $2$ 为底。
-
-##### LeftistTree结构体的声明
+##### 完整代码
 
 ```cpp
-template<typename T> void wlswap(T& a, T& b){T c=a;a=b;b=c;}
-template<typename T>
-struct LeftistTree
+class LeftistTree
 {
-    LeftistTree *lson, *rson;
-    T data;int dist;
-    LeftistTree(){lson = rson = NULL;data = 0;dist = 0;}
-    LeftistTree(T dat){lson = rson = NULL;data = dat;dist = 0;}
+private:
+    class Node
+    {
+    private:
+        int64 val;
+        Node *son[2];
+    public:
+        Node():val(),son{nullptr, nullptr}{}
+        Node(int64 v):val(v),son{nullptr, nullptr}{}
+        ~Node(){}
+        friend class LeftistTree;
+        friend Node* merge(Node* a, Node* b)
+        {
+            if(a==nullptr)return b;
+            if(b==nullptr)return a;
+            if(a->val > b->val)swap(a, b);
+            if(myrand()&1)swap(a->son[0], a->son[1]);
+            a->son[1] = merge(a->son[1], b);
+            return a;
+        }
+    };
+
+    Node * root;
+public:
+    LeftistTree():root(nullptr){}
+    LeftistTree(int64 v){root = new Node(v);}
+    ~LeftistTree(){}
+    inline int64 top() const {return root->val;}
+    void pop()
+    {
+        Node *old_root = root;
+        root = merge(root->son[0], root->son[1]);
+        delete old_root;old_root = nullptr;
+    }
+    void insert(int64 v)
+    {
+        Node *node = new Node(v);
+        root = merge(root, node);
+    }
+    void operator += (LeftistTree& b)
+    {
+        root = merge(root, b.root);
+    }
 };
 ```
 
@@ -193,6 +219,5 @@ struct LeftistTree
 
 [^1]:[OI-wiki dist的定义和性质](https://oi-wiki.org/ds/leftist-tree/#dist-%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E6%80%A7%E8%B4%A8)
 [^2]: [OI-wiki 左偏树的定义和性质](https://oi-wiki.org/ds/leftist-tree/#%E5%B7%A6%E5%81%8F%E6%A0%91%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E6%80%A7%E8%B4%A8)
-[^3]:[LeftistTree结构体的声明](#LeftistTree结构体的声明)
-[^4]:[Randomized Heap](https://cp-algorithms.com/data_structures/randomized_heap.html)
+[^3]:[Randomized Heap](https://cp-algorithms.com/data_structures/randomized_heap.html)
 
