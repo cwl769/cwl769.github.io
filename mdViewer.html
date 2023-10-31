@@ -80,9 +80,14 @@
             var vars = query.split("&");
             for (var i=0;i<vars.length;i++) {
                 var pair = vars[i].split("=");
-                if(pair[0] == variable){return pair[1];}
+                if(pair[0] == variable)
+                {
+                    var ans = pair[1];
+                    ans = ans.replace("%2F", "/");
+                    return ans;
+                }
             }
-            return("404.md");
+            return("404");
         }
         document.write("<title>"+ getQueryVariable("ti") + "  ˗ˋˏᰔᩚˎˊ˗" +"</title>");
     </script>
