@@ -12,49 +12,6 @@
     <script src="./js/markdown-it-anchor/dist/markdownItAnchor.umd.js"></script>
     <script src="./js/markdown-it-toc-done-right/dist/markdownItTocDoneRight.umd.js"></script>
     <script src="./js/markdown-it-container/dist/markdown-it-container.min.js"></script>
-    <script>
-        var md = window.markdownit({
-            html: true, //可以识别html
-            linkify: true,//自动检测像链接的文本
-            breaks: true,//回车换行
-            typographer: true,//优化排版，标点
-            //代码高亮
-            highlight: function (str, lang) {
-                if (lang && hljs.getLanguage(lang)) {
-                    try {
-                        return '<pre class="hljs"><code>' +
-                            hljs.highlight(lang, str, true).value +
-                            '</code></pre>';
-                    } catch (__) {}
-                }
-                return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
-            }
-        })
-        .use(window.markdownitSub)
-        .use(window.markdownitSup)
-        .use(window.markdownitFootnote)
-        .use(window.markdownitDeflist)
-        .use(window.markdownitTaskLists)
-        .use(window.markdownitMark)
-        .use(window.markdownitContainer)
-        .use(window.markdownItAnchor, {
-            permalink: false,
-            permalinkBefore: false,
-            permalinkSymbol: '#'
-        })
-        .use(window.markdownItTocDoneRight, {
-            containerClass: 'toc',
-            containerId: 'toc',
-            listType: 'ul',
-            listClass: 'listClass',
-            itemClass: 'itemClass',
-            linkClass: 'linkClass',
-            callback: function (html, ast) {
-            //把目录单独列出来
-                //left.innerHTML = html;
-            }
-        });
-    </script>
     <!--代码高亮highlight-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/rainbow.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
@@ -100,7 +57,51 @@
     <script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script>
 </head> 
 <body id="background_image">
-    
+    <div id="toc-container" style="background-color: rgba(204, 245, 255, 0.7); position: fixed;width: 21vw;height: 70vh;top: 0;left: 0;margin-left: 2vw;margin-top: 10px;border-radius: 10px;overflow: scroll;"></div>
+    <script>
+        var toc_container = document.getElementById("toc-container");
+        var md = window.markdownit({
+            html: true, //可以识别html
+            linkify: true,//自动检测像链接的文本
+            breaks: true,//回车换行
+            typographer: true,//优化排版，标点
+            //代码高亮
+            highlight: function (str, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    try {
+                        return '<pre class="hljs"><code>' +
+                            hljs.highlight(lang, str, true).value +
+                            '</code></pre>';
+                    } catch (__) {}
+                }
+                return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+            }
+        })
+        .use(window.markdownitSub)
+        .use(window.markdownitSup)
+        .use(window.markdownitFootnote)
+        .use(window.markdownitDeflist)
+        .use(window.markdownitTaskLists)
+        .use(window.markdownitMark)
+        .use(window.markdownitContainer)
+        .use(window.markdownItAnchor, {
+            permalink: false,
+            permalinkBefore: false,
+            permalinkSymbol: '#'
+        })
+        .use(window.markdownItTocDoneRight, {
+            containerClass: 'toc',
+            containerId: 'toc',
+            listType: 'ul',
+            listClass: 'listClass',
+            itemClass: 'itemClass',
+            linkClass: 'linkClass',
+            callback: function (html, ast) {
+                console.log(html);
+                toc_container.innerHTML = html;
+            }
+        });
+    </script>
     <style>
         code
         {
@@ -113,7 +114,7 @@
             border-radius: 1px;
         }
     </style>
-    <div style="background-color: rgba(248, 246, 231, 0.898);margin-left: 15vw;margin-right: 15vw;padding-left: 20px;padding-right: 20px;border-radius: 10px;padding-top: 5px;padding-bottom: 5px;" id="blog-container">
+    <div style="background-color: rgba(248, 246, 231, 0.898);margin-left: 25vw;margin-right: 5vw;padding-left: 20px;padding-right: 20px;border-radius: 10px;padding-top: 5px;padding-bottom: 5px;" id="blog-container">
     <script>
         /*get .md file*/ 
         var xhr = new XMLHttpRequest();
