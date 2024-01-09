@@ -8,7 +8,7 @@
 
 #### 可行流
 
-​	对于流网络 $G=(V,E)$，可行流是一个函数 $f:E\rightarrow \R$，$f(u,v)$ 称为边 $(u,v)$ 的流量。$f$ 需同时满足下列条件：
+​	对于流网络 $G=(V,E)$，可行流是一个函数 $f:E\rightarrow \mathbb{R}$，$f(u,v)$ 称为边 $(u,v)$ 的流量。$f$ 需同时满足下列条件：
 
 1.   **容量限制** $0\leq f(u, v) \leq c(u,v)$。
 2.   **流量守恒** $\forall x\in V-\{s,t\},\sum_{(u,x)\in E}f(u,x) = \sum_{(x,v)\in E}f(x,v)$。
@@ -55,6 +55,7 @@ $$
 
 证明：
 $$
+\begin{aligned}
 \because&& f(u,v)\leq c(u,v)\\
 \therefore&& c(u,v)-f(u,v)\geq0\\
 \therefore&& \sum_{u\in S}\sum_{v\in T}(c(u,v)-f(u,v))\geq 0\\
@@ -63,6 +64,7 @@ $$
 \therefore&& \sum_{u\in T}\sum_{v\in S}f(u,v)\geq0\\
 \therefore&& \sum_{u\in S}\sum_{v\in T}f(u,v)-\sum_{u\in T}\sum_{v\in S}f(u,v)\leq\sum_{u\in S}\sum_{v\in T}c(u,v)\\
 \text{即}&&f(S,T)\leq c(S,T)
+\end{aligned}
 $$
 
 
