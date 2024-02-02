@@ -37,6 +37,19 @@ update at 2024-01-12 21:00
 >-   [ ] F
 >-   [ ] G
 
+#### abc336
+
+>   see also [My Submissions](https://atcoder.jp/contests/abc336/submissions/me)
+>
+>   **solved:**
+>
+>   A B C
+>
+>   -   [ ] D
+>   -   [ ] E
+>   -   [ ] F
+>   -   [ ] G
+
 
 
 ### ARC
