@@ -1,6 +1,7 @@
 <!DOCTYPE html> 
 <head> 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="style.css">
     <!--Markdown-->
     <script src="./js/markdown-it/dist/markdown-it.min.js"></script>
     <script src="./js/markdown-it-sub/dist/markdown-it-sub.min.js"></script>
@@ -26,7 +27,6 @@
         };
     </script>
     <script id="MathJax-script" async src="js/Mathjax/tex-mml-chtml.js"></script>
-    <link rel="stylesheet" href="style.css">
     
     <!--title-->
     <script>
@@ -50,130 +50,120 @@
     </script>
     
     <!--gitalk-->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"> 
-    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>  
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> -->  
     
     <!--MD5-->
     <script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script>
 </head> 
-<body id="background_image">
-    <div id="toc-container" style="background-color: rgba(204, 245, 255, 0.7); position: fixed;width: 21vw;height: 70vh;top: 0;left: 0;margin-left: 2vw;margin-top: 10px;border-radius: 10px;overflow: scroll;"></div>
-    <script>
-        var toc_container = document.getElementById("toc-container");
-        var md = window.markdownit({
-            html: true, //可以识别html
-            linkify: true,//自动检测像链接的文本
-            breaks: true,//回车换行
-            typographer: true,//优化排版，标点
-            //代码高亮
-            highlight: function (str, lang) {
-                if (lang && hljs.getLanguage(lang)) {
-                    try {
-                        return '<pre class="hljs"><code>' +
-                            hljs.highlight(lang, str, true).value +
-                            '</code></pre>';
-                    } catch (__) {}
+<body id="mdViewer" class="background-image">
+    <div id="article-container">
+        <div id="toc-container">
+        <script>
+            var toc_container = document.getElementById("toc-container");
+            var md = window.markdownit({
+                html: true, //可以识别html
+                linkify: true,//自动检测像链接的文本
+                breaks: true,//回车换行
+                typographer: true,//优化排版，标点
+                //代码高亮
+                highlight: function (str, lang) {
+                    if (lang && hljs.getLanguage(lang)) {
+                        try {
+                            return '<pre class="hljs"><code>' +
+                                hljs.highlight(lang, str, true).value +
+                                '</code></pre>';
+                        } catch (__) {}
+                    }
+                    return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
                 }
-                return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
-            }
-        })
-        .use(window.markdownitSub)
-        .use(window.markdownitSup)
-        .use(window.markdownitFootnote)
-        .use(window.markdownitDeflist)
-        .use(window.markdownitTaskLists)
-        .use(window.markdownitMark)
-        .use(window.markdownitContainer)
-        .use(window.markdownItAnchor, {
-            permalink: false,
-            permalinkBefore: false,
-            permalinkSymbol: '#'
-        })
-        .use(window.markdownItTocDoneRight, {
-            containerClass: 'toc',
-            containerId: 'toc',
-            listType: 'ul',
-            listClass: 'listClass',
-            itemClass: 'itemClass',
-            linkClass: 'linkClass',
-            callback: function (html, ast) {
-                console.log(html);
-                toc_container.innerHTML = html;
-            }
-        });
-    </script>
-    <style>
-        code
-        {
-            font-size: 16px;
-        }
-        a,a:hover
-        {
-            text-decoration: none;
-            color: rgb(160, 160, 180);
-            border-radius: 1px;
-        }
-    </style>
-    <div style="background-color: rgba(248, 246, 231, 0.898);margin-left: 25vw;margin-right: 5vw;padding-left: 20px;padding-right: 20px;border-radius: 10px;padding-top: 5px;padding-bottom: 5px;overflow: scroll;" id="blog-container">
-    <script>
-        /*get .md file*/ 
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", getQueryVariable("file")+"?r="+Math.random()*1e18, false); 
-        xhr.send();
+            })
+            .use(window.markdownitSub)
+            .use(window.markdownitSup)
+            .use(window.markdownitFootnote)
+            .use(window.markdownitDeflist)
+            .use(window.markdownitTaskLists)
+            .use(window.markdownitMark)
+            .use(window.markdownitContainer)
+            .use(window.markdownItAnchor, {
+                permalink: false,
+                permalinkBefore: false,
+                permalinkSymbol: '#'
+            })
+            .use(window.markdownItTocDoneRight, {
+                containerClass: 'toc',
+                containerId: 'toc',
+                listType: 'ul',
+                listClass: 'listClass',
+                itemClass: 'itemClass',
+                linkClass: 'linkClass',
+                callback: function (html, ast) {
+                    console.log(html);
+                    toc_container.innerHTML = html;
+                }
+            });
+        </script>
+        </div><div id="blog-container">
+        <script>
+            /*get .md file*/ 
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", getQueryVariable("file")+"?r="+Math.random()*1e18, false); 
+            xhr.send();
 
-        var text = "";
-        var inlatex = 0;
-        for(var i=0;i<xhr.responseText.length;++i)
-        {
-            if(xhr.responseText[i]=='$'&&(i==0||xhr.responseText[i-1]!='$')) {inlatex ^= 1;}
-            if(xhr.responseText[i]=='*'&&inlatex==1)
+            var text = "";
+            var inlatex = 0;
+            for(var i=0;i<xhr.responseText.length;++i)
             {
-                text += "\\\*";
-                continue;
-            }
-            if(i+2<xhr.responseText.length&&
-                xhr.responseText[i]=='\n'&&
-                xhr.responseText[i+1]=='='&&
-                xhr.responseText[i+2]=='\n'&&
-                inlatex==1)
-            {
-                text += '=';
-                i += 2;
-                continue;
-            }
-            if(i+1<xhr.responseText.length&&
-                xhr.responseText[i]=='\\'&&
-                xhr.responseText[i+1]=='\\'&&
-                inlatex==1)
-            {
-                text += "\\\\\\\\";
-                i += 1;
-                continue;
-            }
+                if(xhr.responseText[i]=='$'&&(i==0||xhr.responseText[i-1]!='$')) {inlatex ^= 1;}
+                if(xhr.responseText[i]=='*'&&inlatex==1)
+                {
+                    text += "\\\*";
+                    continue;
+                }
+                if(i+2<xhr.responseText.length&&
+                    xhr.responseText[i]=='\n'&&
+                    xhr.responseText[i+1]=='='&&
+                    xhr.responseText[i+2]=='\n'&&
+                    inlatex==1)
+                {
+                    text += '=';
+                    i += 2;
+                    continue;
+                }
+                if(i+1<xhr.responseText.length&&
+                    xhr.responseText[i]=='\\'&&
+                    xhr.responseText[i+1]=='\\'&&
+                    inlatex==1)
+                {
+                    text += "\\\\\\\\";
+                    i += 1;
+                    continue;
+                }
 
-            text += xhr.responseText[i];
-        }
-        console.log(text);
-        
-        document.write(md.render(text));
-    </script>
+                text += xhr.responseText[i];
+            }
+            console.log(text);
+            
+            document.write(md.render(text));
+        </script>
+        </div>
     </div>
     <div id="gitalk-container"></div>
     <script>
-        var gitalk = new Gitalk({
-            clientID: '06b7bf49b52e3a3427ec',
-            clientSecret: '283f761c6687b50cb26c65056be0d98693ed58d6',
-            repo: 'cwl07.github.io',
-            owner: 'cwl07',
-            admin: ['cwl07'],
-            id: md5(getQueryVariable("file")),      // Ensure uniqueness and length less than 50
-            language: 'zh-CN',
-            distractionFreeMode: false  // Facebook-like distraction free mode
-        });
+        // var gitalk = new Gitalk({
+        //     clientID: '06b7bf49b52e3a3427ec',
+        //     clientSecret: '283f761c6687b50cb26c65056be0d98693ed58d6',
+        //     repo: 'cwl07.github.io',
+        //     owner: 'cwl07',
+        //     admin: ['cwl07'],
+        //     id: md5(getQueryVariable("file")),      // Ensure uniqueness and length less than 50
+        //     language: 'zh-CN',
+        //     distractionFreeMode: false  // Facebook-like distraction free mode
+        // });
 
-        gitalk.render('gitalk-container');
-        console.log(getQueryVariable("file"));
-        console.log(md5(getQueryVariable("file")));
+        // gitalk.render('gitalk-container');
+        // console.log(getQueryVariable("file"));
+        // console.log(md5(getQueryVariable("file")));
     </script>
     
 </body>

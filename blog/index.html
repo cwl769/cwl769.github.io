@@ -4,7 +4,7 @@
     <title>cwl的博客 ૮꒰ ˶• ༝ •˶꒱ა</title>
     <link rel="stylesheet" href="../style.css">
 </head> 
-<body id="background_image">
+<body class="background-image">
     <script>
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "blog_list.xml", false); 
@@ -38,8 +38,8 @@
                 {
                     if(blog[j].nodeName=="title")
                     {
-                        document.write('<div id=\"blog_container\" onclick=\"location.href=\'' + link_address + '\';\">')
-                        document.write('<h1 id="blog_title">' + blog[j].childNodes[0].nodeValue + '</h1>');
+                        document.write('<div id=\"blog-item\" onclick=\"location.href=\'' + link_address + '\';\">')
+                        document.write('<h1 id="blog-title">' + blog[j].childNodes[0].nodeValue + '</h1>');
                         document.write('<p>' + intro + '</p>');
                         document.write('</div>')
                     }
