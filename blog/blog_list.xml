@@ -20,4 +20,10 @@
     <tag>#Math</tag>
 </blog>
 
+<blog visible="true">
+    <title>Network Flow</title>
+    <intro>network flow</intro>
+    <link>../mdViewer.html?file=note/NetworkFlow.md&amp;ti=Network%20Flow</link>
+</blog>
+
 </root>
