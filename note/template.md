@@ -557,21 +557,73 @@ for(int i=1;i<=m;++i)printf("%d\n", lca.ans[i]);
 
 ```cpp
 typedef long long int64;
-struct Int
-{
-    static int64 MOD;
-    int64 val;
-    Int(){val=0ll;}
-    Int(int x){val=(x%MOD+MOD)%MOD;}
-    Int(int64 x){val=(x%MOD+MOD)%MOD;}
-    Int operator + (Int b){return Int((val+b.val)%MOD);}
-    Int operator - (Int b){return Int(((val-b.val)%MOD+MOD)%MOD);}
-    Int operator * (Int b){return Int((val*b.val)%MOD);}
-    void operator += (Int b){val=(val+b.val)%MOD;}
-    void operator -= (Int b){val=((val-b.val)%MOD+MOD)%MOD;}
-    void operator *= (Int b){val=(val*b.val)%MOD;}
+template<int64 M>
+class Int {
+private:
+    int64 v;
+public:
+    Int():v(){}
+    Int(const Int& b) {
+        v = b.v;
+    }
+    Int(Int&& b) {
+        v = b.v;
+    }
+    Int(int64 x) {
+        if(x<0) {
+            v = (x%M)+M;
+            if(v==M)v = 0;
+        } else if (x >= M) {
+            v = x % M;
+        } else {
+            v = x;
+        }
+    }
+    Int& operator = (const Int& b) {
+        v = b.v;
+        return *this;
+    }
+    Int& operator = (Int&& b) {
+        v = b.v;
+        return *this;
+    }
+    Int operator + (Int b) const {
+        return v + b.v;
+    }
+    Int operator - (Int b) const {
+        return v - b.v;
+    }
+    Int operator * (Int b) const {
+        return v * b.v;
+    }
+    Int& operator += (Int b) {
+        v += b.v;
+        if(v >= M)
+            v -= M;
+        return *this;
+    }
+    Int& operator -= (Int b) {
+        v -= b.v;
+        if(v < 0)
+            v += M;
+        return *this;
+    }
+    Int& operator *= (Int b) {
+        v = (v * b.v) % M;
+        return *this;
+    }
+    Int operator ^ (uint64 b) const {
+        Int ans = 1;
+        Int base = *this;
+        for(;b;b>>=1) {
+            if(b&1)
+                ans *= base;
+            base *= base;
+        }
+        return ans;
+    }
+    int64 val() const {return v;}
 };
-int64 Int::MOD = 998244353;
 ```
 
 **注:** 
